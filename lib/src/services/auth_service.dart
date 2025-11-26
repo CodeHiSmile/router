@@ -27,9 +27,7 @@ class AuthService {
   }
 
   /// Kiểm tra trạng thái đăng nhập
-  Future<bool> isLoggedIn() async {
-    return _isLoggedIn;
-  }
+  bool get isLoggedIn => _isLoggedIn;
 
   void changeLoginPath(String path) {
     if (loginPath != path) {
@@ -64,6 +62,61 @@ class AuthService {
     return true;
   }
 
+  /// Thực thi [action] khi user đã đăng nhập.
+  /// Nếu chưa login thì điều hướng đến [loginPath], chờ login thành công rồi mới chạy [action].
+  Future<void> runAfterLogin({
+    required FutureOr<void> Function() action,
+  }) async {
+    Future<void> runAction() => Future.sync(action);
+
+    if (isLoggedIn) {
+      await runAction();
+      return;
+    }
+
+    final navigator = getIt.get<AppNavigator>();
+    final completer = Completer<void>();
+
+    Future<void> triggerActionOnce() async {
+      if (completer.isCompleted) return;
+
+      try {
+        await runAction();
+        LogUtils.d("hihi chay ham action xong roi ne");
+
+        completer.complete();
+      } catch (error, stackTrace) {
+        completer.completeError(error, stackTrace);
+      }
+    }
+
+    LogUtils.d(
+      '🔒 User chưa login, chuyển tới $loginPath để chạy action bảo vệ.',
+    );
+
+    final didLogin = await navigator.pushTo(loginPath);
+    LogUtils.d("didLogin: $didLogin");
+
+    // Tạo listener nhưng chưa trigger vội
+    final sub = authStateStream.listen((loggedIn) {
+      if (loggedIn) {
+        triggerActionOnce();
+      }
+    });
+
+    // Nếu user BACK mà không đăng nhập:
+    if (didLogin != true) {
+      LogUtils.d("User back mà chưa login → cancel listener.");
+      await sub.cancel();
+      return;
+    }
+
+    // Nếu login thành công
+    triggerActionOnce();
+    completer.future.whenComplete(() => sub.cancel());
+    return completer.future;
+  }
+
   /// Đăng xuất
   Future<void> logout({bool canNavigateLogin = false}) async {
     LogUtils.d('🚪 Đang đăng xuất...');
@@ -88,19 +141,12 @@ class AuthService {
   }) async {
     _isLoggedIn = true;
 
-    if (shouldAutoRestore) {
-      // Configure callback trước khi restore
-      if (onRestoreComplete != null) {
-        // RouterService.configureAutoRestore(
-        //   onAuthStateChanged: onRestoreComplete,
-        // );
-      }
-      // Trigger auto-restore
-      _authStateController.add(true);
-    } else {
-      // Skip auto-restore
-      LogUtils.d('⏭️ Skip auto-restore theo yêu cầu');
+    // Configure callback trước khi restore
+    if (onRestoreComplete != null) {
+      RouterService.configureAutoRestore(onAuthStateChanged: onRestoreComplete);
     }
+
+    loginWithManualRestore(canPushToPage: false);
 
     return true;
   }

@@ -7,7 +7,7 @@ abstract class AppNavigator {
 
   void navigateTo(String path, {Object? extra});
 
-  Future<void> pushTo(String path, {Object? extra});
+  Future<dynamic> pushTo(String path, {Object? extra});
 
   Future<void> pop([Object? result]);
 

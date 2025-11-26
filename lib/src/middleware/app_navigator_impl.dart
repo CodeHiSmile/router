@@ -37,8 +37,8 @@ class AppNavigatorImpl extends AppNavigator {
 
   /// Push route mới mà không cần BuildContext
   @override
-  Future<void> pushTo(String path, {Object? extra}) async {
-    await _router?.push(path, extra: extra);
+  Future<dynamic> pushTo(String path, {Object? extra}) async {
+    return await _router?.push(path, extra: extra);
   }
 
   /// Pop route hiện tại mà không cần BuildContext

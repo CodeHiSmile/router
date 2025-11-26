@@ -123,7 +123,7 @@ class RouterGuard {
   Future<String?> guard(BuildContext context, GoRouterState state) async {
     final authService = getIt<AuthService>();
 
-    final isLoggedIn = await authService.isLoggedIn();
+    final isLoggedIn = authService.isLoggedIn;
 
     // location hiện tại : Bỏ query params
     final String location = state.matchedLocation.split('?').first;
@@ -177,7 +177,7 @@ class RouterGuard {
 
     final navigator = getIt.get<AppNavigator>();
 
-    navigator.pop();
+    navigator.pop(true);
     if (canPushToPage) {
       navigator.pushTo(fullPath, extra: state.extra);
     }
