@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
-import 'package:router/src/middleware/app_navigator.dart';
+import 'package:router/src/interfaces/app_navigator.dart';
+import 'package:router/src/middleware/app_navigator_impl.dart';
 import 'package:router/src/services/auth_service.dart';
 import 'package:router/src/services/router_service.dart';
 import 'package:router/src/utils/router_logger.dart';
@@ -174,9 +175,11 @@ class RouterGuard {
       fullPath += '?$queryString';
     }
 
-    AppNavigator.pop();
+    final navigator = getIt.get<AppNavigator>();
+
+    navigator.pop();
     if (canPushToPage) {
-      AppNavigator.pushTo(fullPath, extra: state.extra);
+      navigator.pushTo(fullPath, extra: state.extra);
     }
   }
 

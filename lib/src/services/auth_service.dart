@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:injectable/injectable.dart';
-import 'package:router/src/middleware/app_navigator.dart';
-import 'package:router/src/middleware/route_guard.dart';
+import 'package:router/router.dart';
+import 'package:router/src/di/di.dart';
 import 'package:shared/shared.dart';
 
 @LazySingleton()
@@ -15,7 +15,7 @@ class AuthService {
 
   /// Stream để theo dõi auth state changes
   final StreamController<bool> _authStateController =
-  StreamController<bool>.broadcast();
+      StreamController<bool>.broadcast();
 
   Stream<bool> get authStateStream => _authStateController.stream;
 
@@ -55,18 +55,18 @@ class AuthService {
 
   /// Optional manual restore call (not recommended, prefer auto-restore)
   Future<bool> loginWithManualRestore({bool canPushToPage = true}) async {
-    print('🔐 Đăng nhập với manual restore...');
+    LogUtils.d('🔐 Đăng nhập với manual restore...');
     _isLoggedIn = true;
 
     RouterGuard.restoreRouteWithData(canPushToPage: canPushToPage);
     _authStateController.add(true);
-    print('✅ Login thành công! Đã manual restore route.');
+    LogUtils.d('✅ Login thành công! Đã manual restore route.');
     return true;
   }
 
   /// Đăng xuất
   Future<void> logout({bool canNavigateLogin = false}) async {
-    print('🚪 Đang đăng xuất...');
+    LogUtils.d('🚪 Đang đăng xuất...');
     _isLoggedIn = false;
 
     // Clear saved route khi logout
@@ -75,10 +75,10 @@ class AuthService {
     // Notify auth state changed
     _authStateController.add(false);
     if (canNavigateLogin) {
-      AppNavigator.navigateTo(loginPath);
+      getIt.get<AppNavigator>().navigateTo(loginPath);
     }
 
-    print('✅ Đã đăng xuất và clear saved route.');
+    LogUtils.d('✅ Đã đăng xuất và clear saved route.');
   }
 
   /// Login với custom behavior
@@ -99,7 +99,7 @@ class AuthService {
       _authStateController.add(true);
     } else {
       // Skip auto-restore
-      print('⏭️ Skip auto-restore theo yêu cầu');
+      LogUtils.d('⏭️ Skip auto-restore theo yêu cầu');
     }
 
     return true;
