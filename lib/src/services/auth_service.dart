@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:domain/domain.dart';
 import 'package:injectable/injectable.dart';
 import 'package:router/router.dart';
 import 'package:router/src/di/di.dart';
@@ -74,7 +75,7 @@ class AuthService {
       return;
     }
 
-    final navigator = getIt.get<AppNavigator>();
+    final navigator = getIt.get<BaseNavigator>();
     final completer = Completer<void>();
 
     Future<void> triggerActionOnce() async {
@@ -128,7 +129,7 @@ class AuthService {
     // Notify auth state changed
     _authStateController.add(false);
     if (canNavigateLogin) {
-      getIt.get<AppNavigator>().navigateTo(loginPath);
+      getIt.get<BaseNavigator>().navigateTo(loginPath);
     }
 
     LogUtils.d('✅ Đã đăng xuất và clear saved route.');

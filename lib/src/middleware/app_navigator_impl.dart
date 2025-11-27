@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
-import 'package:router/src/interfaces/app_navigator.dart';
+import 'package:domain/domain.dart';
 
-@LazySingleton(as: AppNavigator)
-class AppNavigatorImpl extends AppNavigator {
-  /// GlobalKey để truy cập NavigatorState từ bất kỳ đâu trong app
-  static final GlobalKey<NavigatorState> navigatorKey =
+@LazySingleton(as: BaseNavigator)
+class NavigatorImpl extends BaseNavigator {
+  static final GlobalKey<NavigatorState> _navigatorKey =
       GlobalKey<NavigatorState>();
+
+  /// GlobalKey để truy cập NavigatorState từ bất kỳ đâu trong app
+  @override
+  GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
 
   /// Lấy NavigatorState hiện tại từ GlobalKey
   @override
@@ -18,7 +21,7 @@ class AppNavigatorImpl extends AppNavigator {
   BuildContext? get currentContext => navigatorKey.currentContext;
 
   static GoRouter? get _router {
-    final ctx = navigatorKey.currentContext;
+    final ctx = _navigatorKey.currentContext;
 
     if (ctx == null) return null;
 

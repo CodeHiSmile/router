@@ -1,3 +1,4 @@
+import 'package:domain/domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 import 'package:router/src/middleware/app_navigator_impl.dart';
@@ -51,7 +52,7 @@ class RouterService {
       initialLocation: initialPath,
       redirect: getIt<RouterGuard>().guard,
       debugLogDiagnostics: false,
-      navigatorKey: AppNavigatorImpl.navigatorKey,
+      navigatorKey: getIt<BaseNavigator>().navigatorKey,
       routes: _routes.map(_mapEntryToGoRoute).toList(),
       observers: [AppNavigatorObserver()],
     );
