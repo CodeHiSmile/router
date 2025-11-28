@@ -1,4 +1,3 @@
-import 'package:get_it/get_it.dart';
 import 'package:router/src/middleware/route_guard.dart';
 import 'package:shared/shared.dart';
 
@@ -17,6 +16,5 @@ class RouterConfig extends Config {
   Future<void> config() async {
     RouterGuard.initializeAutoRestore();
     di.configureInjection();
-    await GetIt.instance.get<AppInfo>().init();
   }
 }

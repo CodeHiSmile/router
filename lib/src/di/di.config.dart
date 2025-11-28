@@ -25,9 +25,11 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i447.RouterGuard>(() => _i447.RouterGuard());
-    gh.lazySingleton<_i559.AuthService>(() => _i559.AuthService());
     gh.lazySingleton<_i614.RouterService>(() => _i614.RouterService());
     gh.lazySingleton<_i494.BaseNavigator>(() => _i1004.NavigatorImpl());
+    gh.lazySingleton<_i559.AuthService>(
+      () => _i559.AuthService(gh<_i494.Repository>()),
+    );
     return this;
   }
 }
