@@ -1,6 +1,7 @@
 import 'package:domain/domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
+import 'package:router/src/config/router_path.dart';
 import 'package:router/src/middleware/route_entry.dart';
 import 'package:router/src/middleware/route_guard.dart';
 import 'package:router/src/observers/app_navigator_observer.dart';
@@ -14,8 +15,6 @@ class RouterService {
 
   late GoRouter _router;
 
-  static String initialPath = '/';
-
   /// Callback được gọi khi cần restore route sau khi login
   static void Function()? onAuthStateChangedCallback;
 
@@ -25,11 +24,11 @@ class RouterService {
     _updateRouter();
   }
 
-  void changeInitialPath(String path) {
-    if (initialPath != path) {
-      initialPath = path;
-    }
-  }
+  // void changeInitialPath(String path) {
+  //   if (initialPath != path) {
+  //     initialPath = path;
+  //   }
+  // }
 
   void registerRoute(RouteEntry entry) {
     _routes.add(entry);
@@ -48,7 +47,7 @@ class RouterService {
         .toSet();
 
     _router = GoRouter(
-      initialLocation: initialPath,
+      initialLocation: RouterPath.instance.initialPath,
       redirect: getIt<RouterGuard>().guard,
       debugLogDiagnostics: false,
       navigatorKey: getIt<BaseNavigator>().navigatorKey,

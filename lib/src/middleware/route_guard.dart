@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 import 'package:domain/domain.dart';
+import 'package:router/src/config/router_path.dart';
 import 'package:router/src/services/auth_service.dart';
 import 'package:router/src/services/router_service.dart';
 import 'package:router/src/utils/router_logger.dart';
@@ -147,7 +148,7 @@ class RouterGuard {
         RouterLogger.info(
           'Route protected, redirect to login, saved: $location',
         );
-        return AuthService.loginPath;
+        return RouterPath.instance.loginPath;
       }
     }
   }

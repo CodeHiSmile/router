@@ -3,13 +3,12 @@ import 'dart:async';
 import 'package:domain/domain.dart';
 import 'package:injectable/injectable.dart';
 import 'package:router/router.dart';
+import 'package:router/src/config/router_path.dart';
 import 'package:router/src/di/di.dart';
 import 'package:shared/shared.dart';
 
 @LazySingleton()
 class AuthService {
-  static String loginPath = '/login';
-
   final Repository _repository;
 
   /// Stream để theo dõi auth state changes
@@ -27,12 +26,6 @@ class AuthService {
 
   /// Kiểm tra trạng thái đăng nhập
   bool get isLoggedIn => _repository.isLoggedIn;
-
-  void changeLoginPath(String path) {
-    if (loginPath != path) {
-      loginPath = path;
-    }
-  }
 
   /// Optional manual restore call (not recommended, prefer auto-restore)
   Future<bool> restoreRoute({bool canPushToPage = true}) async {
@@ -71,10 +64,10 @@ class AuthService {
     }
 
     LogUtils.d(
-      '🔒 User chưa login, chuyển tới $loginPath để chạy action bảo vệ.',
+      '🔒 User chưa login, chuyển tới ${RouterPath.instance.loginPath} để chạy action bảo vệ.',
     );
 
-    final didLogin = await navigator.pushTo(loginPath);
+    final didLogin = await navigator.pushTo(RouterPath.instance.loginPath);
     LogUtils.d("didLogin: $didLogin");
 
     // Tạo listener nhưng chưa trigger vội
@@ -103,7 +96,7 @@ class AuthService {
 
     _authStateController.add(false);
     if (canNavigateLogin) {
-      getIt.get<BaseNavigator>().navigateTo(loginPath);
+      getIt.get<BaseNavigator>().navigateTo(RouterPath.instance.loginPath);
     }
 
     LogUtils.d('✅ Đã đăng xuất thành công.');
