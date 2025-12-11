@@ -1,7 +1,6 @@
 import 'package:domain/domain.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
-import 'package:router/src/middleware/app_navigator_impl.dart';
 import 'package:router/src/middleware/route_entry.dart';
 import 'package:router/src/middleware/route_guard.dart';
 import 'package:router/src/observers/app_navigator_observer.dart';

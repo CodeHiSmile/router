@@ -10,8 +10,6 @@ import 'package:shared/shared.dart';
 class AuthService {
   static String loginPath = '/login';
 
-  static String mainPagePath = '/';
-
   final Repository _repository;
 
   /// Stream để theo dõi auth state changes
@@ -33,12 +31,6 @@ class AuthService {
   void changeLoginPath(String path) {
     if (loginPath != path) {
       loginPath = path;
-    }
-  }
-
-  void changeMainPagePath(String path) {
-    if (mainPagePath != path) {
-      mainPagePath = path;
     }
   }
 
