@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
@@ -132,9 +133,23 @@ class RouterGuard {
     lastAttemptedRoute = location;
 
     if (!RouterService.protectedRoutes.contains(location)) {
-      if (!RouterService.protectedRoutes.contains(lastAttemptedRoute)) {
-        loginSuccessAttemptedRoute = null;
-        _savedRouteState = state; // Lưu saved state khi không cần bảo vệ
+      if (kIsWeb) {
+        if (isLoggedIn && state.fullPath == RouterPath.instance.loginPath) {
+          return RouterPath.instance.dashboardPath;
+        }
+
+        if (!isLoggedIn && state.fullPath != RouterPath.instance.loginPath) {
+          return RouterPath.instance.loginPath;
+        }
+
+        if (!RouterService.protectedRoutes.contains(lastAttemptedRoute)) {
+          loginSuccessAttemptedRoute = null;
+        }
+      } else {
+        if (!RouterService.protectedRoutes.contains(lastAttemptedRoute)) {
+          loginSuccessAttemptedRoute = null;
+          _savedRouteState = state; // Lưu state khi không cần bảo vệ
+        }
       }
 
       return null;

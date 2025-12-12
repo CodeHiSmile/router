@@ -96,7 +96,7 @@ class AuthService {
 
     _authStateController.add(false);
     if (canNavigateLogin) {
-      getIt.get<BaseNavigator>().navigateTo(RouterPath.instance.loginPath);
+      getIt.get<BaseNavigator>().replace(RouterPath.instance.loginPath);
     }
 
     LogUtils.d('✅ Đã đăng xuất thành công.');

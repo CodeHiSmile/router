@@ -5,4 +5,5 @@ class RouterPath {
 
   String initialPath = '/';
   String loginPath = '/login';
+  String dashboardPath = '/dashboard';
 }
